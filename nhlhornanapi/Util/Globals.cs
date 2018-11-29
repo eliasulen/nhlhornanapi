@@ -10,5 +10,13 @@ namespace nhlhornanapi.Util
         public static int UtcOffset = DateUtil.UtcOffsetStandard;
 
         public static void SetUtcOffset(int utcOffset) => UtcOffset = utcOffset;
+
+        public static class Points
+        {
+            public static int Win = 2;
+            public static int OtLoss = 1;
+            public static int Loss = 0;
+        }
     }
+
 }

@@ -12,7 +12,8 @@ namespace nhlhornanapi.Map.Schedule
         {
             List<DTORecent> recent = new List<DTORecent>();
 
-           
+            var games = source.dates.SelectMany(d => d.games).ToList();
+            
 
             return recent;
         }

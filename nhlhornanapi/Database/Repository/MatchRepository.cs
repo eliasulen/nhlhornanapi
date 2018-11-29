@@ -21,18 +21,18 @@ namespace nhlhornanapi.Database.Repository
         public async Task<IEnumerable<Match>> GetAllMatches()
         {
             var matches = await _context.Matches.Find(_ => true).ToListAsync();
-            return matches;
+            return matches.OrderByDescending(m => m.Date);
         }
 
         public async Task<IEnumerable<Match>> GetMatchesBySeason(string season)
         {
-            List<Match> matches = new List<Match>();
+            IEnumerable<Match> matches = Enumerable.Empty<Match>();
 
             if (season.ToLower() == "any")
-                matches = await _context.Matches.Find(_ => true).ToListAsync();
+                matches = await GetAllMatches();
             else
                 matches = await _context.Matches.Find(match => match.Season == season).ToListAsync();
-            return matches;
+            return matches.OrderByDescending(m => m.Date);
         }
 
         public async Task<IEnumerable<Match>> GetMatchesBySeasonTeam(string season, string team)
@@ -42,14 +42,15 @@ namespace nhlhornanapi.Database.Repository
                 matches = await _context.Matches.Find(match => match.Home.Team == team || match.Away.Team == team).ToListAsync();
 
             matches = await _context.Matches.Find(match => match.Season == season && (match.Home.Team == team || match.Away.Team == team)).ToListAsync();
-            return matches;
+            return matches.OrderByDescending(m => m.Date);
         }
 
 
         public async Task<IEnumerable<Match>> GetMatchesByTeam(string team)
         {
             var matches = await _context.Matches.Find(match => match.Home.Team == team || match.Away.Team == team).ToListAsync();
-            return matches;
+
+            return matches.OrderByDescending(m => m.Date);
         }
 
         public async Task AddMatch(Match item)

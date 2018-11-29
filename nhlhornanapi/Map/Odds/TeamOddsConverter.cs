@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using nhlhornanapi.Database.Entity;
 using nhlhornanapi.Model.Odds;
+using nhlhornanapi.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -91,18 +92,41 @@ namespace nhlhornanapi.Map.Odds
                 var matchHomeStats = new MatchStats()
                 {
                     Wins = homeGames.Where(s => s.Outcome == MatchOutcome.Home).Count(),
-                    Draws = homeGames.Where(s => s.Outcome == MatchOutcome.Draw).Count(),
+                    OtLosses = homeGames.Where(s => s.Home.Result == ParticipantOutcome.LoseOvertime || s.Home.Result == ParticipantOutcome.LosePenalties).Count(),
                     Losses = homeGames.Where(s => s.Outcome == MatchOutcome.Away).Count(),
-                    Amount = homeGames.Count()
+                    Amount = homeGames.Count(),
                 };
+
+                var homeWinPts = homeGames.Where(s => (s.Home.Result == ParticipantOutcome.WinFulltime || s.Home.Result == ParticipantOutcome.WinOvertime || s.Home.Result == ParticipantOutcome.WinPenalties) && s.MatchType == MatchType.Regular).Count() * Globals.Points.Win;
+                var homeOtPts = homeGames.Where(s => (s.Home.Result == ParticipantOutcome.LoseOvertime || s.Home.Result == ParticipantOutcome.LosePenalties) && s.MatchType == MatchType.Regular).Count() * Globals.Points.OtLoss;
+                var homeTotPts = homeGames.Where(s => s.MatchType == MatchType.Regular).Count() * Globals.Points.Win;
+                matchHomeStats.PercentOfPoints = Math.Round((((double)homeWinPts + (double)homeOtPts) / (double)homeTotPts) * 100, 2);
 
                 var matchAwayStats = new MatchStats()
                 {
                     Wins = awayGames.Where(s => s.Outcome == MatchOutcome.Away).Count(),
-                    Draws = awayGames.Where(s => s.Outcome == MatchOutcome.Draw).Count(),
+                    OtLosses = awayGames.Where(s => s.Away.Result == ParticipantOutcome.LoseOvertime || s.Away.Result == ParticipantOutcome.LosePenalties).Count(),
                     Losses = awayGames.Where(s => s.Outcome == MatchOutcome.Home).Count(),
                     Amount = awayGames.Count()
                 };
+
+                var awayWinPts = awayGames.Where(s => (s.Away.Result == ParticipantOutcome.WinFulltime || s.Away.Result == ParticipantOutcome.WinOvertime || s.Away.Result == ParticipantOutcome.WinPenalties) && s.MatchType == MatchType.Regular).Count() * Globals.Points.Win;
+                var awayOtPts = awayGames.Where(s => (s.Away.Result == ParticipantOutcome.LoseOvertime || s.Away.Result == ParticipantOutcome.LosePenalties) && s.MatchType == MatchType.Regular).Count() * Globals.Points.OtLoss;
+                var awayTotPts = awayGames.Where(s => s.MatchType == MatchType.Regular).Count() * Globals.Points.Win;
+                matchAwayStats.PercentOfPoints = Math.Round((((double)awayWinPts + (double)awayOtPts) / (double)awayTotPts) * 100, 2);
+
+                var matchTotalStats = new MatchStats()
+                {
+                    Wins = matchAwayStats.Wins + matchHomeStats.Wins,
+                    OtLosses = matchAwayStats.OtLosses + matchHomeStats.OtLosses,
+                    Amount = matchAwayStats.Amount + matchHomeStats.Amount,
+                    Losses = matchAwayStats.Losses + matchHomeStats.Losses
+                };
+
+                var totalWinPts = homeWinPts + awayWinPts;
+                var totalOtPts = homeOtPts + awayOtPts;
+                var totalTotPts = homeTotPts + awayTotPts;
+                matchTotalStats.PercentOfPoints = Math.Round((((double)totalWinPts + (double)totalOtPts) / (double)totalTotPts) * 100, 2);
 
                 var homeHighestHomeOdds = new SpecificOdds(homeGames.OrderByDescending(s => s.Odds.Home).FirstOrDefault());
                 var homeHighestDrawOdds = new SpecificOdds(homeGames.OrderByDescending(s => s.Odds.Draw).FirstOrDefault());
@@ -125,7 +149,7 @@ namespace nhlhornanapi.Map.Odds
                 teams.Add(new DTOTeamOdds()
                 {
                     Name = name,
-                    MatchStats = new MatchStatsPair(matchHomeStats, matchAwayStats, amountOfGames),
+                    MatchStats = new MatchStatsPair(matchHomeStats, matchAwayStats, matchTotalStats),
                     AverageOdds = new NullableOddsPair(averageHomeOdds, averageAwayOdds),
                     ScoreOdds = new NullableScoreOddsPair(new NullableOddsPair(averageHomeOddsOutcome, averageAwayOddsOutcome), new NullableOddsPair(scoreHomeOdds, scoreAwayOdds)),
                     HighestOdds = new SpecificOddsSetPair(homeHighestSet, awayHighestSet),
@@ -133,7 +157,7 @@ namespace nhlhornanapi.Map.Odds
                 });
             }
 
-            var specifiedTeam = teams.FirstOrDefault(t => t.MatchStats.Amount == source.Count());
+            var specifiedTeam = teams.FirstOrDefault(t => t.MatchStats.Total.Amount == source.Count());
             if (specifiedTeam != null)
                 return new List<DTOTeamOdds>() { specifiedTeam };
 

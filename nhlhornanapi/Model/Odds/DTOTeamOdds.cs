@@ -60,14 +60,14 @@
 
     public class MatchStatsPair
     {
-        public MatchStatsPair(MatchStats home, MatchStats away, int amountOfGames)
+        public MatchStatsPair(MatchStats home, MatchStats away, MatchStats total)
         {
-            Amount = amountOfGames;
+            Total = total;
             Home = home;
             Away = away;
         }
 
-        public int Amount { get; set; }
+        public MatchStats Total{ get; set; }
         public MatchStats Home { get; set; }
         public MatchStats Away { get; set; }
     }
@@ -77,7 +77,8 @@
         public int Amount { get; set; }
         public int Wins { get; set; }
         public int Losses { get; set; }
-        public int Draws { get; set; }
+        public int OtLosses { get; set; }
+        public double PercentOfPoints { get; set; }
     }
 
     public class NullableScoreOddsPair
