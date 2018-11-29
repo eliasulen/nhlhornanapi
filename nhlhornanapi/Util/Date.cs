@@ -9,9 +9,9 @@ namespace nhlhornanapi.Util
     {
         public const int UtcOffsetStandard = -120;
  
-        public static (DateTime StartDate, DateTime EndDate) ScheduleListStandard()
+        private static (DateTime StartDate, DateTime EndDate) ScheduleStandardInternal()
         {
-            var dt = DateTime.Now;
+            var dt = Now();
             DateTime startDate = DateTime.MinValue;
             DateTime endDate = DateTime.MinValue;
             var culture = System.Threading.Thread.CurrentThread.CurrentCulture;
@@ -31,6 +31,13 @@ namespace nhlhornanapi.Util
 
             return date.AddMinutes(c);
         }
+
+        public static DateTime Now() => DateTime.Now;
+
+
+        public static (DateTime StartDate, DateTime EndDate) ScheduleStandard => ScheduleStandardInternal();
+
+        public static (DateTime StartDate, DateTime EndDate) RecentStandard => (Now().Date.AddDays(-1), Now().Date.AddDays(-1));
 
     }
 }

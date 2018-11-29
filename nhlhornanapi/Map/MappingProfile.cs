@@ -4,6 +4,7 @@ using nhlhornanapi.Map;
 using nhlhornanapi.Map.Odds;
 using nhlhornanapi.Map.Schedule;
 using nhlhornanapi.Model.Odds;
+using nhlhornanapi.Model.Recent;
 using nhlhornanapi.Model.Schedule;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace nhlhornanapi
         {
             CreateMap<Match, DTOOdds>();
             CreateMap<JsonSchedule, IEnumerable<DTOSchedule>>().ConvertUsing<ScheduleConverter>();
+            CreateMap<JsonRecent, IEnumerable<DTORecent>>().ConvertUsing<RecentConverter>();
             CreateMap<IEnumerable<Match>, IEnumerable<DTOTeamOdds>>().ConvertUsing<TeamOddsConverter>();
         }
     }

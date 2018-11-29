@@ -201,35 +201,26 @@ namespace nhlhornanapi.Model.Schedule
         public int wait { get; set; }
         public List<Date> dates { get; set; }
 
-        public JsonSchedule(string stringResult, DateTime startDate, DateTime endDate)
+        public static JsonSchedule Get(string stringResult, DateTime startDate, DateTime endDate)
         {
-            if (!string.IsNullOrEmpty(stringResult))
+            var rawSchedule = JsonConvert.DeserializeObject<JsonSchedule>(stringResult);
+
+            if (Globals.UtcOffset != 0)
             {
-                var rawSchedule = JsonConvert.DeserializeObject<JsonSchedule>(stringResult);
-
-                if (Globals.UtcOffset != 0)
+                rawSchedule.dates.ForEach(d => d.games.ForEach(g => { g.gameDate = DateUtil.HandleOffset(g.gameDate); }));
+                rawSchedule.dates.ForEach(d => d.games.RemoveAll(g => g.gameDate > endDate || g.gameDate < startDate));
+                rawSchedule.dates.RemoveAll(d => !d.games.Any());
+                rawSchedule.dates.ForEach(d =>
                 {
-                    rawSchedule.dates.ForEach(d => d.games.ForEach(g => { g.gameDate = DateUtil.HandleOffset(g.gameDate); }));
-                    rawSchedule.dates.ForEach(d => d.games.RemoveAll(g => g.gameDate > endDate || g.gameDate < startDate));
-                    rawSchedule.dates.RemoveAll(d => !d.games.Any());
-                    rawSchedule.dates.ForEach(d =>
-                    {
-                        d.totalGames = d.games.Count;
-                        d.totalItems = d.games.Count;
-                    });
+                    d.totalGames = d.games.Count;
+                    d.totalItems = d.games.Count;
+                });
 
-                    rawSchedule.totalItems = rawSchedule.dates.SelectMany(d => d.games).Count();
-                    rawSchedule.totalGames = rawSchedule.dates.SelectMany(d => d.games).Count();
-                }
-
-                this.copyright = rawSchedule.copyright;
-                this.dates = rawSchedule.dates;
-                this.totalEvents = rawSchedule.totalEvents;
-                this.totalItems = rawSchedule.totalItems;
-                this.totalGames = rawSchedule.totalGames;
-                this.wait = rawSchedule.wait;
-                this.totalMatches = rawSchedule.totalMatches;
+                rawSchedule.totalItems = rawSchedule.dates.SelectMany(d => d.games).Count();
+                rawSchedule.totalGames = rawSchedule.dates.SelectMany(d => d.games).Count();
             }
+
+            return rawSchedule;
         }
     }
 

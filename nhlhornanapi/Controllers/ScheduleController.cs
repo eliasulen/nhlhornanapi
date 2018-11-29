@@ -32,20 +32,21 @@ namespace nhlhornanapi.Controllers
                         Globals.SetUtcOffset(utcOffset.Value);
 
                     if (!endDate.HasValue && !startDate.HasValue)
-                        (startDate, endDate) = DateUtil.ScheduleListStandard();
+                        (startDate, endDate) = DateUtil.ScheduleStandard;
 
                     if (!endDate.HasValue)
-                        endDate = DateUtil.ScheduleListStandard().Item2;
+                        endDate = DateUtil.ScheduleStandard.EndDate;
 
                     if (!startDate.HasValue)
-                        startDate = DateUtil.ScheduleListStandard().Item1;
+                        startDate = DateUtil.ScheduleStandard.StartDate;
 
-                    var url = $"{Constants.Links.Base}{Constants.Links.ScheduleLinescore}startDate={startDate.Value.AddDays(-1).ToShortDateString()}&endDate={endDate.Value.AddDays(1).ToShortDateString()}";
+                    var url = $"{Constants.Links.Base}{Constants.Links.ScheduleLinescore}startDate=" +
+                        $"{startDate.Value.AddDays(-1).ToShortDateString()}&endDate={endDate.Value.AddDays(1).ToShortDateString()}";
 
                     var response = await client.GetAsync(url);
                     response.EnsureSuccessStatusCode();
 
-                    var jsonSchedule = new JsonSchedule(await response.Content.ReadAsStringAsync(), startDate.Value, endDate.Value);
+                    var jsonSchedule = JsonSchedule.Get(await response.Content.ReadAsStringAsync(), startDate.Value, endDate.Value);
 
                     return Ok(_mapper.Map<IEnumerable<DTOSchedule>>(jsonSchedule));
                 }
