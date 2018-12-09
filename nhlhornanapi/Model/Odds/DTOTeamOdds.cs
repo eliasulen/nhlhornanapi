@@ -3,16 +3,16 @@
     public class DTOTeamOdds
     {
         public string Name { get; set; }
-        public MatchStatsPair MatchStats { get; set; }
-        public NullableOddsPair AverageOdds { get; set; }
-        public NullableScoreOddsPair ScoreOdds { get; set; }
-        public SpecificOddsSetPair HighestOdds { get; set; }
-        public SpecificOddsSetPair LowestOdds { get; set; }
+        public DTODTOMatchStatsPair DTOMatchStats { get; set; }
+        public DTONullableOddsPair AverageOdds { get; set; }
+        public DTONullableScoreOddsPair ScoreOdds { get; set; }
+        public DTOSpecificOddsSetPair HighestOdds { get; set; }
+        public DTOSpecificOddsSetPair LowestOdds { get; set; }
     }
 
-    public class SpecificOdds
+    public class DTOSpecificOdds
     {
-        public SpecificOdds(Database.Entity.Match entity)
+        public DTOSpecificOdds(Database.Entity.Match entity)
         {
             Key = entity.Key;
             Odds = new Odds()
@@ -32,47 +32,47 @@
         public Odds Odds { get; set; }
     }
 
-    public class SpecificOddsSet
+    public class DTOSpecificOddsSet
     {
-        public SpecificOddsSet(SpecificOdds home, SpecificOdds draw, SpecificOdds away)
+        public DTOSpecificOddsSet(DTOSpecificOdds home, DTOSpecificOdds draw, DTOSpecificOdds away)
         {
             Home = home;
             Draw = draw;
             Away = away;
         }
 
-        public SpecificOdds Home { get; set; }
-        public SpecificOdds Draw { get; set; }
-        public SpecificOdds Away { get; set; }
+        public DTOSpecificOdds Home { get; set; }
+        public DTOSpecificOdds Draw { get; set; }
+        public DTOSpecificOdds Away { get; set; }
     }
 
-    public class SpecificOddsSetPair
+    public class DTOSpecificOddsSetPair
     {
-        public SpecificOddsSetPair(SpecificOddsSet home, SpecificOddsSet away)
+        public DTOSpecificOddsSetPair(DTOSpecificOddsSet home, DTOSpecificOddsSet away)
         {
             Home = home;
             Away = away;
         }
 
-        public SpecificOddsSet Home { get; set; }
-        public SpecificOddsSet Away { get; set; }
+        public DTOSpecificOddsSet Home { get; set; }
+        public DTOSpecificOddsSet Away { get; set; }
     }
 
-    public class MatchStatsPair
+    public class DTODTOMatchStatsPair
     {
-        public MatchStatsPair(MatchStats home, MatchStats away, MatchStats total)
+        public DTODTOMatchStatsPair(DTOMatchStats home, DTOMatchStats away, DTOMatchStats total)
         {
             Total = total;
             Home = home;
             Away = away;
         }
 
-        public MatchStats Total{ get; set; }
-        public MatchStats Home { get; set; }
-        public MatchStats Away { get; set; }
+        public DTOMatchStats Total{ get; set; }
+        public DTOMatchStats Home { get; set; }
+        public DTOMatchStats Away { get; set; }
     }
 
-    public class MatchStats
+    public class DTOMatchStats
     {
         public int Amount { get; set; }
         public int Wins { get; set; }
@@ -81,31 +81,31 @@
         public double PercentOfPoints { get; set; }
     }
 
-    public class NullableScoreOddsPair
+    public class DTONullableScoreOddsPair
     {
-        public NullableOddsPair Factors { get; set; }
-        public NullableOddsPair Score { get; set; }
+        public DTONullableOddsPair Factors { get; set; }
+        public DTONullableOddsPair Score { get; set; }
 
-        public NullableScoreOddsPair(NullableOddsPair factors, NullableOddsPair score)
+        public DTONullableScoreOddsPair(DTONullableOddsPair factors, DTONullableOddsPair score)
         {
             Factors = factors;
             Score = score;
         }
     }
 
-    public class NullableOdds
+    public class DTONullableOdds
     {
         public double? Home { get; set; }
         public double? Draw { get; set; }
         public double? Away { get; set; }
     }
 
-    public class NullableOddsPair
+    public class DTONullableOddsPair
     {
-        public NullableOdds Home { get; set; }
-        public NullableOdds Away { get; set; }
+        public DTONullableOdds Home { get; set; }
+        public DTONullableOdds Away { get; set; }
 
-        public NullableOddsPair(NullableOdds home, NullableOdds away)
+        public DTONullableOddsPair(DTONullableOdds home, DTONullableOdds away)
         {
             Home = home;
             Away = away;
