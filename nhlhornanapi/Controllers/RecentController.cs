@@ -30,7 +30,7 @@ namespace nhlhornanapi.Controllers
                 {
                     var recentStandard = DateUtil.RecentStandard;
 
-                    var url = $"{Constants.Links.Base}{Constants.Links.ScheduleLinescoreScoringplays}startDate=" +
+                    var url = $"{Constants.ApiLinks.Base}{Constants.ApiLinks.ScheduleLinescoreScoringplays}startDate=" +
                           $"{recentStandard.StartDate.ToShortDateString()}&endDate={recentStandard.EndDate.ToShortDateString()}";
 
                     var response = await client.GetAsync(url);

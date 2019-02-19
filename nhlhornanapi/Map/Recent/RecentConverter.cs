@@ -108,7 +108,7 @@ namespace nhlhornanapi.Map.Schedule
                 recent.Home = home;
                 recent.Away = away;
                 recent.State = g.status.detailedState;
-
+                recent.Periods = periods;
                 recents.Add(recent);
             }
 

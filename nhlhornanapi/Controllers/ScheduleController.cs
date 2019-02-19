@@ -40,7 +40,7 @@ namespace nhlhornanapi.Controllers
                     if (!startDate.HasValue)
                         startDate = DateUtil.ScheduleStandard.StartDate;
 
-                    var url = $"{Constants.Links.Base}{Constants.Links.ScheduleLinescore}startDate=" +
+                    var url = $"{Constants.ApiLinks.Base}{Constants.ApiLinks.ScheduleLinescore}startDate=" +
                         $"{startDate.Value.AddDays(-1).ToShortDateString()}&endDate={endDate.Value.AddDays(1).ToShortDateString()}";
 
                     var response = await client.GetAsync(url);
@@ -54,7 +54,7 @@ namespace nhlhornanapi.Controllers
                 {
                     return BadRequest(e.Message);
                 }
-            }
+            }   
         }
     }
 }
