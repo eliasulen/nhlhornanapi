@@ -48,7 +48,7 @@ namespace nhlhornanapi.Model.Player
         public double shootingPctg { get; set; }
         public int shots { get; set; }
         public double timeOnIcePerGame { get; set; }
-        public int salary { get; set; }
+        public int? salary { get; set; }
     }
 
     public class JsonPlayer
